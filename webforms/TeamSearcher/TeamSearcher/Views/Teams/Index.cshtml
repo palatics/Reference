@@ -1,0 +1,102 @@
+﻿@model TeamSearcher.ViewModels.TeamsViewModel
+
+@{
+    ViewBag.Title = "Team Searcher";
+
+}
+
+<h2>Team Searcher</h2>
+
+@using (Html.BeginForm("Index", "Teams", FormMethod.Post))
+{
+    <div>
+        @Html.ValidationMessageFor(m => m.Columns, "", new{@style="color:red"})
+    </div>
+
+    <div class="form-row mt-2 mb-2 row align-items-center">
+      
+     
+        <div class="col-auto">
+            Search
+        </div>
+        <div class="col-auto">
+            <input type="text" class="form-control" name="terms"/>
+        </div>
+        <div class="col-auto">
+            On
+        </div>
+        <div class="col-auto">
+            @Html.DropDownListFor(m => m.Columns, new SelectList(Model.Columns, "Value", "Text"), null, new {@class="form-control"})
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="col-auto">
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) && ViewData.ModelState.IsValid)
+            {
+                <small>Click the term to clear the search.</small>
+                <div>
+                    <div class="float-left pr-2">Term(s):</div>
+                    @Html.ActionLink(Model.SearchTerm, "Index", "Teams")
+                    <div>
+                        On: @Model.Columns.FirstOrDefault(m => m.Value == Model.SelectedColumn).Text
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Rank</th>
+        <th>Team Name</th>
+        <th>Mascot</th>
+        <th>Date of Last Win</th>
+        <th>Win Rate</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Ties</th>
+        <th>Total Games</th>
+    </tr>
+    </thead>
+    @if (!Model.Teams.Any())
+    {
+        <tr>
+            <td colspan="9">No Teams Found.</td>
+        </tr>
+    }
+    else
+    {
+        foreach (var team in Model.Teams)
+        {
+            <tr>
+                <td>
+                    @team.Rank
+                </td> <td>
+                    @team.Name
+                </td> <td>
+                    @team.Mascot
+                </td> <td>
+                    @team.LastWinDate.ToString("d")
+                </td> <td>
+                    @Html.DisplayFor(x => team.WinRate)
+                </td> <td>
+                    @team.Wins
+                </td> <td>
+                    @team.Losses
+                </td> <td>
+                    @team.Ties
+                </td> <td>
+                    @team.GamesPlayed
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+
+
